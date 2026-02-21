@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌾 LeafLens-AI - Weather & Mandi Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/combined.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>🌾 LeafLens-AI</h1>
+                <p>Smart Agriculture Dashboard</p>
+            </div>
+            
+            <ul class="nav-tabs">
+                <li>
+                    <button class="nav-tab active" onclick="switchTab('weather')">
+                        🌤️ Weather Alerts
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-tab" onclick="switchTab('mandi')">
+                        💰 Mandi Prices
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-tab" onclick="switchTab('combined')">
+                        📊 Combined View
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="nav-status">
+                <span id="statusIndicator" class="status-dot"></span>
+                <span id="statusText">Online</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        
+        <!-- ==================== WEATHER TAB ==================== -->
+        <div id="weatherTab" class="tab-content active">
+            <div class="container">
+                <header class="section-header">
+                    <h2>🌤️ Weather Alert System</h2>
+                    <p>Get Real-time Disease Risk Alerts Based on Weather</p>
+                </header>
+
+                <!-- Location Detection -->
+                <div class="section">
+                    <h3>📍 Location Selection</h3>
+                    <div class="location-input">
+                        <input 
+                            type="text" 
+                            id="weatherCity" 
+                            placeholder="Enter city name (e.g., Delhi, Mumbai)" 
+                            class="input-field"
+                        >
+                        <button 
+                            onclick="detectLocation()" 
+                            class="btn btn-secondary"
+                        >
+                            🔍 Auto Detect
+                        </button>
+                        <button 
+                            onclick="getWeather()" 
+                            class="btn btn-primary"
+                        >
+                            📡 Get Weather
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div id="weatherLoading" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>Fetching weather data...</p>
+                </div>
+
+                <!-- Weather Display -->
+                <div id="weatherDisplay" class="weather-display hidden">
+                    <div class="weather-current">
+                        <h3 id="weatherCity2">Delhi</h3>
+                        <div class="weather-grid">
+                            <div class="weather-item">
+                                <span class="label">🌡️ Temperature</span>
+                                <span id="temperature" class="value">--°C</span>
+                            </div>
+                            <div class="weather-item">
+                                <span class="label">💧 Humidity</span>
+                                <span id="humidity" class="value">--%</span>
+                            </div>
+                            <div class="weather-item">
+                                <span class="label">🌧️ Rainfall</span>
+                                <span id="rainfall" class="value">--mm</span>
+                            </div>
+                            <div class="weather-item">
+                                <span class="label">💨 Wind Speed</span>
+                                <span id="windSpeed" class="value">-- km/h</span>
+                            </div>
+                            <div class="weather-item">
+                                <span class="label">☁️ Clouds</span>
+                                <span id="clouds" class="value">--%</span>
+                            </div>
+                            <div class="weather-item">
+                                <span class="label">🎯 Condition</span>
+                                <span id="condition" class="value">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disease Risk Assessment -->
+                    <div class="disease-risks">
+                        <h3>🦠 Disease Risk Assessment</h3>
+                        <div id="risksContainer" class="risks-grid"></div>
+                    </div>
+
+                    <!-- Confidence Score -->
+                    <div class="confidence-section">
+                        <h3>📊 Analysis Confidence</h3>
+                        <div class="confidence-display">
+                            <div class="confidence-score">
+                                <div class="score-circle">
+                                    <span id="confidenceScore">0</span>
+                                    <span class="percent">%</span>
+                                </div>
+                            </div>
+                            <div class="confidence-details">
+                                <p><strong>Level:</strong> <span id="confidenceLevel">--</span></p>
+                                <p><strong>Recommendation:</strong> <span id="confidenceRec">--</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advisories -->
+                    <div class="advisories-section">
+                        <h3>📋 Farm Management Advisories</h3>
+                        <div id="advisoriesContainer" class="advisories-list"></div>
+                    </div>
+
+                    <!-- Export Button -->
+                    <div class="export-section">
+                        <button onclick="exportWeatherReport()" class="btn btn-secondary">
+                            📥 Export Report
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Multi-City Analysis -->
+                <div class="section">
+                    <h3>🌐 Multi-City Analysis</h3>
+                    <button onclick="analyzeMultipleCities()" class="btn btn-primary">
+                        🔍 Analyze Multiple Cities
+                    </button>
+                    <div id="multiCityResults" class="multi-city-results hidden"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== MANDI TAB ==================== -->
+        <div id="mandiTab" class="tab-content hidden">
+            <div class="container">
+                <header class="section-header">
+                    <h2>💰 Mandi Price Dashboard</h2>
+                    <p>Real-time Agricultural Market Prices Across India & Odisha</p>
+                </header>
+
+                <!-- Load Sample Data -->
+                <div class="controls">
+                    <button id="loadSampleBtn" class="btn btn-primary" onclick="loadSampleData()">
+                        📊 Load Sample Data
+                    </button>
+                </div>
+
+                <!-- Check Prices Section -->
+                <div class="section">
+                    <h3>💰 Check Prices</h3>
+                    <div class="form-group">
+                        <label for="cropSelect">Select Crop:</label>
+                        <select id="cropSelect" class="input-field">
+                            <option value="">-- Select a Crop --</option>
+                        </select>
+                        <button id="checkPricesBtn" class="btn btn-secondary" onclick="checkPrices()">
+                            🔍 Check Prices
+                        </button>
+                    </div>
+                    <div id="loadingSpinner" class="loading hidden">
+                        <div class="spinner"></div> Loading prices...
+                    </div>
+                </div>
+
+                <!-- Comparison Section -->
+                <div id="comparisonSection" class="section hidden">
+                    <h2>📊 Price Comparison</h2>
+                    <div class="comparison-grid">
+                        <div class="stat-card">
+                            <h3>Average Price</h3>
+                            <p id="avgPrice">₹0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Max Price</h3>
+                            <p id="maxPrice">₹0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Min Price</h3>
+                            <p id="minPrice">₹0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Price Range</h3>
+                            <p id="priceRange">₹0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Best & Worst Markets -->
+                <div id="bestWorstSection" class="section hidden">
+                    <h2>🏆 Best & Worst Markets</h2>
+                    <div class="best-worst-grid">
+                        <div class="market-card best">
+                            <h3>🥇 Best Market (Highest Price)</h3>
+                            <p><strong>Mandi:</strong> <span id="bestMarketName">N/A</span></p>
+                            <p><strong>Location:</strong> <span id="bestMarketLocation">N/A</span></p>
+                            <p><strong>Price:</strong> <span id="bestMarketPrice">₹0</span></p>
+                            <p><strong>Date:</strong> <span id="bestMarketDate">N/A</span></p>
+                        </div>
+                        <div class="market-card worst">
+                            <h3>🥈 Worst Market (Lowest Price)</h3>
+                            <p><strong>Mandi:</strong> <span id="worstMarketName">N/A</span></p>
+                            <p><strong>Location:</strong> <span id="worstMarketLocation">N/A</span></p>
+                            <p><strong>Price:</strong> <span id="worstMarketPrice">₹0</span></p>
+                            <p><strong>Date:</strong> <span id="worstMarketDate">N/A</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market Prices Grid -->
+                <div id="marketsSection" class="section hidden">
+                    <h2>🏪 Market Prices</h2>
+                    <div id="pricesGrid" class="prices-grid"></div>
+                </div>
+
+                <!-- Add Price Section -->
+                <div class="section">
+                    <h3>➕ Add New Price</h3>
+                    <div class="form-group">
+                        <label for="addCropSelect">Crop:</label>
+                        <select id="addCropSelect" class="input-field">
+                            <option value="">-- Select Crop --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="addMandiSelect">Mandi:</label>
+                        <select id="addMandiSelect" class="input-field">
+                            <option value="">-- Select Mandi --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="addPriceInput">Price (₹):</label>
+                        <input type="number" id="addPriceInput" class="input-field" placeholder="Enter price" min="0">
+                    </div>
+                    <button id="addPriceBtn" class="btn btn-secondary" onclick="addPrice()">➕ Add Price</button>
+                </div>
+
+                <!-- Set Alert Section -->
+                <div class="section">
+                    <h3>🔔 Set Price Alert</h3>
+                    <div class="form-group">
+                        <label for="alertCropSelect">Crop:</label>
+                        <select id="alertCropSelect" class="input-field">
+                            <option value="">-- Select Crop --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="alertType">Alert Type:</label>
+                        <select id="alertType" class="input-field">
+                            <option value="below">Price Falls Below</option>
+                            <option value="above">Price Goes Above</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="targetPrice">Target Price (₹):</label>
+                        <input type="number" id="targetPrice" class="input-field" placeholder="Enter target price" min="0">
+                    </div>
+                    <button id="setAlertBtn" class="btn btn-secondary" onclick="setAlert()">🔔 Set Alert</button>
+                </div>
+
+                <!-- Active Alerts -->
+                <div id="activeAlertsSection" class="section hidden">
+                    <h2>📢 Active Price Alerts</h2>
+                    <div id="noAlerts" class="info-message">No active alerts</div>
+                    <div id="alertsList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== COMBINED VIEW TAB ==================== -->
+        <div id="combinedTab" class="tab-content hidden">
+            <div class="container">
+                <header class="section-header">
+                    <h2>📊 Combined Smart Dashboard</h2>
+                    <p>Weather Alerts + Mandi Prices in One View</p>
+                </header>
+
+                <div class="combined-grid">
+                    <!-- Weather Summary -->
+                    <div class="combined-section">
+                        <h3>🌤️ Current Weather Summary</h3>
+                        <div class="summary-card">
+                            <div class="summary-item">
+                                <span class="label">Location:</span>
+                                <span id="combinedCity" class="value">--</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Temperature:</span>
+                                <span id="combinedTemp" class="value">--°C</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Condition:</span>
+                                <span id="combinedCondition" class="value">--</span>
+                            </div>
+                        </div>
+                        <button onclick="switchTab('weather')" class="btn btn-secondary">
+                            View Details →
+                        </button>
+                    </div>
+
+                    <!-- Mandi Summary -->
+                    <div class="combined-section">
+                        <h3>💰 Top Price Movements</h3>
+                        <div id="combinedPrices" class="summary-card">
+                            <p>Load sample data to see price movements</p>
+                        </div>
+                        <button onclick="switchTab('mandi')" class="btn btn-secondary">
+                            View All Prices →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Combined Alerts -->
+                <div class="section">
+                    <h3>⚠️ System Alerts</h3>
+                    <div class="alerts-combined">
+                        <div class="alert-type">
+                            <h4>🦠 Disease Risks</h4>
+                            <div id="combinedDiseaseAlerts">No disease risks detected</div>
+                        </div>
+                        <div class="alert-type">
+                            <h4>📢 Price Alerts</h4>
+                            <div id="combinedPriceAlerts">No price alerts set</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="section">
+                    <h3>⚡ Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button onclick="getWeatherQuick('Delhi')" class="btn btn-action">
+                            🌤️ Delhi Weather
+                        </button>
+                        <button onclick="getWeatherQuick('Mumbai')" class="btn btn-action">
+                            🌤️ Mumbai Weather
+                        </button>
+                        <button onclick="getWeatherQuick('Bangalore')" class="btn btn-action">
+                            🌤️ Bangalore Weather
+                        </button>
+                        <button onclick="switchTab('mandi')" class="btn btn-action">
+                            💰 Load Mandi Data
+                        </button>
+                    </div>
+                </div>
+
+                <!-- System Info -->
+                <div class="section">
+                    <h3>ℹ️ System Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <h4>🌍 Weather Module</h4>
+                            <p>Real-time weather data with disease risk assessment</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>💰 Mandi Prices</h4>
+                            <p>25 mandis (15 in Odisha) with 15 crop types</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>📊 Analytics</h4>
+                            <p>Price comparison and alert system</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>🌾 LeafLens-AI © <span id="currentYear">2026</span> | Smart Agriculture Dashboard</p>
+            <p>Weather Alerts + Mandi Prices for Better Farming Decisions</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/combined.js') }}"></script>
+    <script>
+        // Auto-update year in footer
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearElement = document.getElementById('currentYear');
+            if (yearElement) {
+                yearElement.textContent = new Date().getFullYear();
+            }
+        });
+    </script>
+</body>
+</html>

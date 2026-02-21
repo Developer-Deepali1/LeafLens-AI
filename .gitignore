@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+weather_cache.json
+output/
+data/

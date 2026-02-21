@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌾 Mandi Price Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mandi.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌾 Mandi Price Dashboard</h1>
+            <p>Real-time Agricultural Market Prices Across India & Odisha</p>
+        </header>
+        
+        <!-- Load Sample Data Button -->
+        <div class="controls">
+            <button id="loadSampleBtn" class="btn btn-primary">
+                📊 Load Sample Data
+            </button>
+        </div>
+        
+        <!-- Check Prices Section -->
+        <div class="section">
+            <h2>💰 Check Prices</h2>
+            <div class="form-group">
+                <label for="cropSelect">Select Crop:</label>
+                <select id="cropSelect">
+                    <option value="">-- Select a Crop --</option>
+                </select>
+                <button id="checkPricesBtn" class="btn btn-secondary">
+                    🔍 Check Prices
+                </button>
+            </div>
+            <div id="loadingSpinner" class="loading hidden">
+                <div class="spinner"></div> Loading...
+            </div>
+        </div>
+        
+        <!-- Comparison Section -->
+        <div id="comparisonSection" class="section hidden">
+            <h2>📊 Price Comparison</h2>
+            <div class="comparison-grid">
+                <div class="stat-card">
+                    <h3>Average Price</h3>
+                    <p id="avgPrice">₹0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Max Price</h3>
+                    <p id="maxPrice">₹0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Min Price</h3>
+                    <p id="minPrice">₹0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Price Range</h3>
+                    <p id="priceRange">₹0</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Best & Worst Markets -->
+        <div id="bestWorstSection" class="section hidden">
+            <h2>🏆 Best & Worst Markets</h2>
+            <div class="best-worst-grid">
+                <div class="market-card best">
+                    <h3>🥇 Best Market (Highest Price)</h3>
+                    <p><strong>Mandi:</strong> <span id="bestMarketName">N/A</span></p>
+                    <p><strong>Location:</strong> <span id="bestMarketLocation">N/A</span></p>
+                    <p><strong>Price:</strong> <span id="bestMarketPrice">₹0</span></p>
+                    <p><strong>Date:</strong> <span id="bestMarketDate">N/A</span></p>
+                </div>
+                <div class="market-card worst">
+                    <h3>🥈 Worst Market (Lowest Price)</h3>
+                    <p><strong>Mandi:</strong> <span id="worstMarketName">N/A</span></p>
+                    <p><strong>Location:</strong> <span id="worstMarketLocation">N/A</span></p>
+                    <p><strong>Price:</strong> <span id="worstMarketPrice">₹0</span></p>
+                    <p><strong>Date:</strong> <span id="worstMarketDate">N/A</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Market Prices Grid -->
+        <div id="marketsSection" class="section hidden">
+            <h2>🏪 Market Prices</h2>
+            <div id="pricesGrid" class="prices-grid"></div>
+        </div>
+        
+        <!-- Add Price Section -->
+        <div class="section">
+            <h2>➕ Add New Price</h2>
+            <div class="form-group">
+                <label for="addCropSelect">Crop:</label>
+                <select id="addCropSelect">
+                    <option value="">-- Select Crop --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="addMandiSelect">Mandi:</label>
+                <select id="addMandiSelect">
+                    <option value="">-- Select Mandi --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="addPriceInput">Price (₹):</label>
+                <input type="number" id="addPriceInput" placeholder="Enter price" min="0">
+            </div>
+            <button id="addPriceBtn" class="btn btn-secondary">➕ Add Price</button>
+        </div>
+        
+        <!-- Set Alert Section -->
+        <div class="section">
+            <h2>🔔 Set Price Alert</h2>
+            <div class="form-group">
+                <label for="alertCropSelect">Crop:</label>
+                <select id="alertCropSelect">
+                    <option value="">-- Select Crop --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="alertType">Alert Type:</label>
+                <select id="alertType">
+                    <option value="below">Price Falls Below</option>
+                    <option value="above">Price Goes Above</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="targetPrice">Target Price (₹):</label>
+                <input type="number" id="targetPrice" placeholder="Enter target price" min="0">
+            </div>
+            <button id="setAlertBtn" class="btn btn-secondary">🔔 Set Alert</button>
+        </div>
+        
+        <!-- Active Alerts -->
+        <div id="activeAlertsSection" class="section hidden">
+            <h2>📢 Active Price Alerts</h2>
+            <div id="noAlerts" class="info-message">No active alerts</div>
+            <div id="alertsList"></div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/mandi.js') }}"></script>
+</body>
+</html>
