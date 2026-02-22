@@ -1,0 +1,8 @@
+"""
+Localization Module - Handles multi-language support
+"""
+
+from .language_manager import LanguageManager
+from .translator import Translator
+
+__all__ = ['LanguageManager', 'Translator']
