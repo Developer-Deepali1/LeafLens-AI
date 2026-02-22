@@ -44,18 +44,14 @@ Dynamic translation using JSON-based localization system.
 ---
 ## 📂 Project Structure
 LeafLens-AI/
-│
 ├── backend/
 │ └── localization/
 │ ├── language_manager.py
 │ ├── translator.py
 │ └── locales/
-│
 ├── static/
 │ └── js/
-│
 ├── templates/
-│
 ├── app.py
 ├── weather_cache.json
 ├── requirements.txt
