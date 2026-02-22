@@ -43,17 +43,35 @@ Dynamic translation using JSON-based localization system.
 - Git & GitHub
 ---
 ## 📂 Project Structure
-LeafLens-AI/
+LeafLens-AI(W+M+L)/
+│
 ├── backend/
-│ └── localization/
-│ ├── language_manager.py
-│ ├── translator.py
-│ └── locales/
+│   ├── mandi_module/
+│   │   ├── mandi_api.py
+│   │   ├── mandi_db.py
+│   │   ├── mandi_routes.py
+│   │   └── notification_system.py
+│   │
+│   ├── weather_module/
+│   │   ├── advisory_engine.py
+│   │   ├── confidence_logic.py
+│   │   ├── location_detector.py
+│   │   ├── utils.py
+│   │   └── weather_api.py
+│   │
+│   └── localization/
+│       ├── language_manager.py
+│       ├── translator.py
+│       └── locales/
+│
 ├── static/
-│ └── js/
 ├── templates/
+├── config/
+├── data/
+├── output/
+├── tests/
+│
 ├── app.py
-├── weather_cache.json
 ├── requirements.txt
 └── README.md
 ## ⚙️ Installation & Setup
